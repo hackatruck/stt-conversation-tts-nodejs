@@ -1,0 +1,23 @@
+{
+  "name": "stt-conversation-tts-nodejs",
+  "version": "0.0.1",
+  "description": "Aplicação para demonstrar uso dos serviços Watson Speech to Text, Conversation e Text to Speech",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hackatruck/stt-conversation-tts-nodejs.git"
+  },
+  "author": "Leandro Cordeiro David (ldavid@br.ibm.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hackatruck/stt-conversation-tts-nodejs/issues"
+  },
+  "homepage": "https://github.com/hackatruck/stt-conversation-tts-nodejs#readme",
+  "dependencies": {
+    "mic": "^2.1.1",
+    "watson-developer-cloud": "^2.34.0"
+  }
+}
