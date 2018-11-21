@@ -18,9 +18,8 @@ var isLinux = (os.platform() === 'linux');
 
 
 var speech_to_text = new SpeechToTextV1({
-  username: config.stt.username,
-  password: config.stt.password,
-  version: 'v1'
+  iam_apikey: config.stt.apikey,
+  url: 'https://gateway-wdc.watsonplatform.net/speech-to-text/api'
 });
 
 // Set up Conversation service.
@@ -32,8 +31,8 @@ var conversation = new ConversationV1({
 });
 
 var text_to_speech = new TextToSpeechV1({
-  username: config.tts.username,
-  password: config.tts.password
+  iam_apikey: config.tts.apikey,
+    url: 'https://gateway-wdc.watsonplatform.net/text-to-speech/api'
 });
 
 // Initiate Microphone Instance to Get audio samples
