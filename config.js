@@ -3,7 +3,7 @@ var config = {};
 config.stt = {};
 config.stt.username = "";
 config.stt.password = ""
-config.stt.apikey = ""
+config.stt.apikey = "" // not used for now - set username and password
 config.stt.keywords=[];
 config.stt.smart_formatting=true;
 config.stt.profanity_filter=true;
@@ -34,7 +34,7 @@ config.conversation.workspace_id=""
 config.tts={};
 config.tts.username=""
 config.tts.password=""
-config.tts.apikey=""
+config.tts.apikey="" // not used for now - set username and password
 
 // Some valid voices to choose
 // de-DE_BirgitVoice

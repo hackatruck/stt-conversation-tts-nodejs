@@ -14,14 +14,16 @@ var context ={};
 var isWin = (os.platform() === 'win32');
 var isMac = (os.platform() === 'darwin');
 var isLinux = (os.platform() === 'linux');
+console.log("os platform:" + os.platform());
 
-
-
+console.log("init speech to text" );
 var speech_to_text = new SpeechToTextV1({
-  iam_apikey: config.stt.apikey,
+  username: config.stt.username, // replace with username from service key
+  password: config.stt.password, // replace with password from service key
   url: 'https://gateway-wdc.watsonplatform.net/speech-to-text/api'
 });
 
+console.log("init watson assistant (conversation)" );
 // Set up Conversation service.
 var conversation = new ConversationV1({
   username: config.conversation.username, // replace with username from service key
@@ -30,8 +32,10 @@ var conversation = new ConversationV1({
   version_date: '2017-05-26'
 });
 
+console.log("init text to speech" );
 var text_to_speech = new TextToSpeechV1({
-  iam_apikey: config.tts.apikey,
+  username: config.tts.username, // replace with username from service key
+  password: config.tts.password, // replace with password from service key
     url: 'https://gateway-wdc.watsonplatform.net/text-to-speech/api'
 });
 
@@ -41,7 +45,7 @@ var micInstance = mic({ 'rate': '44100', 'channels': '2', 'debug': false, 'exitO
 var micInputStream = micInstance.getAudioStream();
 
 micInputStream.on('data', function(data) {
-  // console.log("Recieved Input Stream: " + data.length);
+  console.log("Recieved Input Stream: " + data.length);
 });
 
 micInputStream.on('error', function(err) {
@@ -50,6 +54,7 @@ micInputStream.on('error', function(err) {
 
 micInputStream.on('silence', function() {
   // detect silence.
+  console.log("Silence detected ");
 });
 
 micInstance.start();
@@ -58,7 +63,7 @@ console.log("Microfone ligado");
 
 function initTextStream(){
   console.log("init text stream")
-  textStream = micInputStream.pipe(speech_to_text.createRecognizeStream({
+  var recognizeStream = speech_to_text.createRecognizeStream({
     content_type: 'audio/l16; rate=44100; channels=2',
     model: config.stt.model,
     customization_id: config.stt.customizationid,
@@ -67,19 +72,23 @@ function initTextStream(){
     profanity_filter: config.stt.profanity_filter,
     keywords: config.stt.keywords,
     smart_formatting: config.stt.smart_formatting
-  }));
-
+  })
+  console.log("pipe")
+  textStream = micInputStream.pipe(recognizeStream);
+  
+  console.log("setEncoding") ;
   textStream.setEncoding('utf8');
 
   var context = {} ; // Save information on conversation context/stage for continous conversation
-  textStream.setEncoding('utf8');
-
+  
+  console.log("set onClose");
   textStream.on('close', function(event) {
     console.log("Speech to Text Stream closed");
     console.log(JSON.stringify(event, null, 2));
     initTextStream();
   });
 
+  console.log("set onData");
   textStream.on('data', function(message) {
     console.log(message); // print the text once received
     conversation.message({
@@ -90,6 +99,7 @@ function initTextStream(){
 
   });
 
+  console.log("set onError");
   textStream.on('error', function(err) {
     console.log(' === Watson Speech to Text : An Error has occurred =====') ; // handle errors
     console.log(err) ;
@@ -101,6 +111,7 @@ initTextStream();
 
 function processResponse(err, response) {
   if (err) {
+    console.log("processResponse error handler")
     console.error(err); // something went wrong
     return;
   }
